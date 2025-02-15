@@ -1,0 +1,84 @@
+2025-02-13 09:39:45,317 - INFO - Starting Flask Application...
+2025-02-13 09:39:45,331 - WARNING -  * Debugger is active!
+2025-02-13 09:39:45,334 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 09:47:25,166 - INFO -  * Detected change in 'd:\\01-STUDY\\ja2pyc\\ja2pyc_study_llama\\dashboard\\app.py', reloading
+2025-02-13 09:47:25,349 - INFO - Starting Flask Application...
+2025-02-13 09:47:25,375 - WARNING -  * Debugger is active!
+2025-02-13 09:47:25,377 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 09:48:08,567 - INFO - Starting Flask Application...
+2025-02-13 09:48:08,583 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.30.139:5000
+2025-02-13 09:48:08,583 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 09:48:08,583 - INFO -  * Restarting with stat
+2025-02-13 09:48:08,767 - INFO - Starting Flask Application...
+2025-02-13 09:48:08,767 - WARNING -  * Debugger is active!
+2025-02-13 09:48:08,767 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 09:48:43,851 - INFO - Starting Flask Application...
+2025-02-13 09:48:43,868 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.30.139:5000
+2025-02-13 09:48:43,868 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 09:48:43,868 - INFO -  * Restarting with stat
+2025-02-13 09:48:44,050 - INFO - Starting Flask Application...
+2025-02-13 09:48:44,050 - WARNING -  * Debugger is active!
+2025-02-13 09:48:44,067 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 09:49:17,259 - INFO - Starting Flask Application...
+2025-02-13 09:49:17,278 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.30.139:5000
+2025-02-13 09:49:17,278 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 09:49:17,279 - INFO -  * Restarting with stat
+2025-02-13 09:49:17,436 - INFO - Starting Flask Application...
+2025-02-13 09:49:17,458 - WARNING -  * Debugger is active!
+2025-02-13 09:49:17,462 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 11:29:31,615 - INFO - Starting Flask Application...
+2025-02-13 11:29:31,631 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.30.139:5000
+2025-02-13 11:29:31,631 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 11:29:31,648 - INFO -  * Restarting with stat
+2025-02-13 11:29:31,815 - INFO - Starting Flask Application...
+2025-02-13 11:29:31,815 - WARNING -  * Debugger is active!
+2025-02-13 11:29:31,831 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 11:33:05,633 - INFO - Python Executable: d:\01-STUDY\ja2pyc\ja2pyc_study_llama\venv\Scripts\python.exe
+Virtual Environment: d:\01-STUDY\ja2pyc\ja2pyc_study_llama\venv
+
+2025-02-13 11:33:05,634 - INFO - 127.0.0.1 - - [13/Feb/2025 11:33:05] "GET / HTTP/1.1" 200 -
+2025-02-13 11:33:05,662 - INFO - 127.0.0.1 - - [13/Feb/2025 11:33:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-13 11:33:18,205 - INFO -  * Detected change in 'd:\\01-STUDY\\ja2pyc\\ja2pyc_study_llama\\dashboard\\app.py', reloading
+2025-02-13 11:33:18,217 - INFO -  * Restarting with stat
+2025-02-13 11:33:18,402 - INFO - Starting Flask Application...
+2025-02-13 11:33:18,402 - WARNING -  * Debugger is active!
+2025-02-13 11:33:18,417 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 11:34:18,801 - INFO -  * Detected change in 'd:\\01-STUDY\\ja2pyc\\ja2pyc_study_llama\\dashboard\\app.py', reloading
+2025-02-13 11:34:18,817 - INFO -  * Restarting with stat
+2025-02-13 11:34:19,001 - INFO - Starting Flask Application...
+2025-02-13 11:34:19,011 - WARNING -  * Debugger is active!
+2025-02-13 11:34:19,016 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 11:34:37,317 - INFO - Starting Flask Application...
+2025-02-13 11:34:37,333 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.30.139:5000
+2025-02-13 11:34:37,333 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 11:34:37,348 - INFO -  * Restarting with stat
+2025-02-13 11:34:37,518 - INFO - Starting Flask Application...
+2025-02-13 11:34:37,518 - WARNING -  * Debugger is active!
+2025-02-13 11:34:37,518 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 11:34:59,130 - INFO - Starting Flask Application...
+2025-02-13 11:34:59,150 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.30.139:5000
+2025-02-13 11:34:59,150 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 11:34:59,151 - INFO -  * Restarting with stat
+2025-02-13 11:34:59,319 - INFO - Starting Flask Application...
+2025-02-13 11:34:59,319 - WARNING -  * Debugger is active!
+2025-02-13 11:34:59,335 - INFO -  * Debugger PIN: 138-282-912
+2025-02-13 12:05:46,572 - INFO -  * Detected change in 'd:\\01-STUDY\\ja2pyc\\ja2pyc_study_llama\\dashboard\\app.py', reloading
+2025-02-13 12:05:46,588 - INFO -  * Restarting with stat
