@@ -3,20 +3,24 @@ import sys
 import subprocess
 
 VENV_PATH = os.path.join(os.path.dirname(__file__), "venv")
-PYTHON_EXEC = os.path.join(VENV_PATH, "Scripts", "python.exe") if os.name == "nt" else os.path.join(VENV_PATH, "bin", "python")
+PYTHON_EXEC = (
+    os.path.join(VENV_PATH, "Scripts", "python.exe")
+    if os.name == "nt"
+    else os.path.join(VENV_PATH, "bin", "python")
+)
 REQUIREMENTS_FILE = "requirements.txt"
 DASHBOARD_PATH = os.path.join(os.path.dirname(__file__), "dashboard")
 
 
 def create_virtualenv():
-    """ 가상환경이 없으면 생성 """
+    """가상환경이 없으면 생성"""
     if not os.path.exists(VENV_PATH):
         print("⚙️  가상환경을 생성하는 중...")
         subprocess.run([sys.executable, "-m", "venv", VENV_PATH], check=True)
 
 
 def activate_virtualenv():
-    """ 가상환경이 활성화되지 않으면 재실행 """
+    """가상환경이 활성화되지 않으면 재실행"""
     if sys.prefix == sys.base_prefix:
         print("🔍 가상환경이 감지되지 않았습니다. 자동으로 실행합니다.")
         create_virtualenv()
@@ -26,31 +30,39 @@ def activate_virtualenv():
 
 
 def install_requirements():
-    """ 필요한 패키지를 설치 """
+    """필요한 패키지를 설치"""
     print("📦 패키지 설치 중...")
     if os.path.exists(REQUIREMENTS_FILE):
-        subprocess.run([PYTHON_EXEC, "-m", "pip", "install", "-r", REQUIREMENTS_FILE], check=True)
+        subprocess.run(
+            [PYTHON_EXEC, "-m", "pip", "install", "-r", REQUIREMENTS_FILE], check=True
+        )
     else:
         subprocess.run([PYTHON_EXEC, "-m", "pip", "install", "flask"], check=True)
 
 
 def run_flask():
-    """ Flask 애플리케이션 실행 """
+    """Flask 애플리케이션 실행"""
     app_path = os.path.join(DASHBOARD_PATH, "app.py")
     if not os.path.exists(app_path):
         print(f"❌ {app_path} 파일이 존재하지 않습니다.")
         return
     print("🚀 Flask 서버 실행 중...")
-    print (f"Main PID: {os.getpid()}")
-    subprocess.run([PYTHON_EXEC, app_path])
+    print(f"Main PID: {os.getpid()}")
+    print("main.py run_flask / sys.path : ", sys.path)
+    print(DASHBOARD_PATH)
+    print(app_path)
+    subprocess.run([PYTHON_EXEC, "-m", "dashboard.app"])
 
 
+print("main.py / sys.path : ", sys.path)
+
+# Init
 if __name__ == "__main__":
     activate_virtualenv()  # 가상환경 활성화
     install_requirements()  # 의존성 설치
-    print (f"Main Python Executable: {sys.executable}")
-    print (f"Main Virtual Environment: {sys.prefix}")
-    print (f"Main PID: {os.getpid()}")
+    print(f"Main Python Executable: {sys.executable}")
+    print(f"Main Virtual Environment: {sys.prefix}")
+    print(f"Main PID: {os.getpid()}")
     run_flask()  # Flask 실행
 
 # import os
