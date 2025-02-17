@@ -5,34 +5,7 @@ app = create_app()  # Flask 앱 생성
 if __name__ == "__main__":
     app.run(debug=True)
 
-# import sys
-# from flask import Flask
-
-# # from dashboard.routes.home import home_bp
-# # from dashboard.routes.api import api_bp
-# # from dashboard.routes.model import model_bp
 # print("app.py / sys.path : ",sys.path)
-# from dashboard.routes.home import home_bp
-
-# # from routes.home import home_bp
-# # from routes.api import api_bp
-# # from routes.model import model_bp
-# app = Flask(__name__)
-
-# # 블루프린트 등록
-# app.register_blueprint(home_bp)
-# # app.register_blueprint(api_bp, url_prefix="/api")
-# # app.register_blueprint(model_bp, url_prefix="/model")
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
-# # 블루프린트 등록
-# # app.register_blueprint(home_bp)
-# # app.register_blueprint(api_bp, url_prefix="/api")
-# # app.register_blueprint(model_bp, url_prefix="/model")
-
-# # if __name__ == "__main__":
-#     # app.run(debug=True)
 
 # # import sys
 # # import os
