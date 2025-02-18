@@ -2,26 +2,20 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="keywords" content="llm, llama, ollama">
-    <meta name="description" content="LLM Model Web UI">
-    <meta name="author" content="JA2PYC">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <meta http-equiv="Copyright" content="JA2PYC" />
     <title>Dashboard</title>
+    {% include '/partials/head_script.html' %}
 </head>
 
 <body>
+    {% include '/partials/header.html' %}
     <main>
-        <div class="header"></div>
         <div class="main_container">
             <h1>Flask Dashboard</h1>
             <p><a href="/api/data">API 데이터 가져오기</a></p>
             <p><a href="/model/predict">AI 모델 예측 실행</a></p>
         </div>
-        <div class="footer"></div>
     </main>
+    {% include '/partials/footer.html' %}
 </body>
 
 </html>
