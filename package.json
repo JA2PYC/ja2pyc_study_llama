@@ -1,0 +1,7 @@
+{
+  "name": "ja2pyc_study_llama",
+  "version": "1.0.0",
+  "dependencies": {
+    "bootstrap-icons": "^1.11.3"
+  }
+}

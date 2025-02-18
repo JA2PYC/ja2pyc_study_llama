@@ -1,0 +1,33 @@
+:root {
+    --color-1: #044BD9;
+    --color-2: #0476d9;
+    --color-4: #01203F;
+    --color-3: #04B2D9;
+    --color-5: #003683;
+}
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+a,
+a:link,
+a:hover,
+a:active {
+    color:#303030;
+    text-decoration: none;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Noto Sans KR', 'Arial', sans-serif;
+}
+
+main {
+    height: calc(100vh - 3.5rem - 3.5rem);
+    margin: 0 auto;
+    overflow: hidden;
+    overflow-y: auto;
+}
