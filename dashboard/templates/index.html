@@ -4,11 +4,15 @@
 <head>
     <title>Dashboard</title>
     {% include '/partials/head_script.html' %}
+
+    <!-- Page Style -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
 </head>
 
 <body>
     {% include '/partials/header.html' %}
     <main>
+        {% include '/partials/aside.html' %}
         <div class="main_container">
             <h1>Flask Dashboard</h1>
             <p><a href="/api/data">API 데이터 가져오기</a></p>

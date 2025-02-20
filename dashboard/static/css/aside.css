@@ -1,0 +1,11 @@
+aside {
+    width: 10rem;
+    height: 100%;
+    overflow: hidden;
+    background-color: #efefef;
+    box-shadow: 5px 0 10px rgba(0,0,0, 0.3);
+    font-size: 0.9rem;
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 1rem;
+}
