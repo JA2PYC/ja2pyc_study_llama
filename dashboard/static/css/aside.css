@@ -1,7 +1,6 @@
 aside {
-    width: 10rem;
+    width: 15rem;
     height: 100%;
-    overflow: hidden;
     background-color: #efefef;
     box-shadow: 5px 0 10px rgba(0,0,0, 0.3);
     font-size: 0.9rem;
