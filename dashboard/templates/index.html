@@ -7,6 +7,7 @@
 
     <!-- Page Style -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+    <script src="{{url_for('static', filename='js/index.js')}}"></script>
 </head>
 
 <body>
@@ -18,17 +19,27 @@
                 <h1>LLMaquarium Dashboard</h1>
             </div>
             <div class="main_llm">
-                <div class="llm_model">
-                    <div class="model_select"></div>
-                    div.model
-                </div>
-                <div class="llm_chat">
-                    <label for="chat_input">LLM Chat</label>
-                    <textarea name="chat_input" id="chat_input" cols="100" rows="10"></textarea>
-                </div>
+                <form action="/model/chat" method="post">
+                    <div class="llm_model">
+                        <div class="model_choose">
+                            <select name="model_select" id="model_select">
+                                <option value="">Select Model</option>
+                            </select>
+                        </div>
+                        <div class="model_mode">Model Mode</div>
+                    </div>
+                    <div class="llm_chat">
+                        <label for="chat_input">LLM Chat</label>
+                        <textarea name="chat_input" id="chat_input" cols="100" rows="10"
+                            placeholder="LLM Chat"></textarea>
+                        <button type="submit">Button</button>
+                    </div>
+                </form>
             </div>
-            <p><a href="/api/data">API 데이터 가져오기 / API DATA</a></p>
-            <p><a href="/model/predict">AI 모델 예측 실행</a></p>
+            <div class="main_func">
+                <p><a href="/api/data">API 데이터 가져오기 / API DATA</a></p>
+                <p><a href="/model/predict">AI 모델 예측 실행</a></p>
+            </div>
         </div>
     </main>
     {% include '/partials/footer.html' %}
