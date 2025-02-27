@@ -2,12 +2,29 @@ $(document).ready(() => {
     console.log('index.js')
     function initialize() {
         console.log('initialize');
+        getModelsList();
         callChatCompletion();
 
     }
 
     function eventHandler() {
 
+    }
+
+    function getModelsList() {
+        $.ajax({
+            url:'/api/openai_list',
+            method:'POST',
+            contentType:'application/json',
+            success: function(data) {
+                if (data) {
+                    console.log(data);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
     }
 
     function callChatCompletion() {
@@ -17,7 +34,7 @@ $(document).ready(() => {
             contentType:'application/json',
             data: JSON.stringify({
                 messages: 'TestMessages',
-                model: 'TestModel',
+                model: 'gpt-3.5-turbo',
                 temperature:0.8
             }),
             success: function (data) {
