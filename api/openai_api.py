@@ -13,7 +13,7 @@ def getModelsList():
     return [model.id for model in models.data]
 
 # LLM 채팅
-def chatCompletion(messages, model="gpt-4", temperature=0.7):
+def chatCompletion(messages, model="gpt-4o-mini", temperature=0.7):
     """ChatGPT API 호출"""
     print(messages)
     print(model)
