@@ -34,7 +34,7 @@ $(document).ready(() => {
             contentType:'application/json',
             data: JSON.stringify({
                 messages: 'TestMessages',
-                model: 'gpt-3.5-turbo',
+                model: 'gpt-4o-mini',
                 temperature:0.8
             }),
             success: function (data) {
