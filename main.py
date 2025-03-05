@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 
+
 VENV_PATH = os.path.join(os.path.dirname(__file__), "venv")
 PYTHON_EXEC = (
     os.path.join(VENV_PATH, "Scripts", "python.exe")
@@ -53,6 +54,18 @@ def run_flask():
     print(app_path)
     subprocess.run([PYTHON_EXEC, "-m", "dashboard.app"])
 
+def run_ollama():
+    """Ollama Server 실행"""
+    from models import ollama
+    ollamaProcess = ollama.startOllama()
+    
+    try:
+        if ollamaProcess:
+            print ("[INFO] Ollama 서버가 실행 되었습니다.")
+    except Exception as e:
+        print(f"[ERROR] Run Ollama : Ollama 서버 실행중 오류 발생 - {e}")
+    finally:
+        ollama.stopOllama(ollamaProcess)
 
 print("main.py / sys.path : ", sys.path)
 
@@ -63,6 +76,7 @@ if __name__ == "__main__":
     print(f"Main Python Executable: {sys.executable}")
     print(f"Main Virtual Environment: {sys.prefix}")
     print(f"Main PID: {os.getpid()}")
+    run_ollama()
     run_flask()  # Flask 실행
 
 # import os
