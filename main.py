@@ -59,31 +59,33 @@ def install_requirements():
 def run_ollama():
     """Ollama Server 실행"""
     global OLLAMA_PROCESS
-    
     from models import ollama
 
-    ollamaProcess = ollama.startOllama()
-
-    try:
-        if ollamaProcess:
-            print("[INFO] Ollama 서버가 실행 되었습니다.")
-    except Exception as e:
-        print(f"[ERROR] Run Ollama : Ollama 서버 실행중 오류 발생 - {e}")
-    finally:
-        ollama.stopOllama(ollamaProcess)
+    if OLLAMA_PROCESS is None:
+        try:
+            OLLAMA_PROCESS = ollama.startOllama()
+            time.sleep(3)
+        except Exception as e:
+            print(f"[ERROR] Ollama 서버 실행중 오류 발생 : {e}")
+        finally:
+            if OLLAMA_PROCESS and OLLAMA_PROCESS.poll() is None:
+                print("[INFO] Ollama 서버가 실행 되었습니다.")
+            else:
+                print("[ERROR] Ollama 서버 실행에 실패했습니다.")
+                OLLAMA_PROCESS = None
 
 
 # Run Flask
 def run_flask():
     """Flask 애플리케이션 실행"""
-    
+
     global FLASK_PROCESS
     app_path = os.path.join(DASHBOARD_PATH, "app.py")
-    
+
     if not os.path.exists(app_path):
         print(f"❌ {app_path} 파일이 존재하지 않습니다.")
         return
-    
+
     print("[INFO] 🚀 Flask 서버 실행 중...")
     # print(f"[TEST] Main PID: {os.getpid()}")
     # print("[TEST] main.py run_flask / sys.path : ", sys.path)
@@ -94,7 +96,7 @@ def run_flask():
 # Close Process
 def cleanup():
     global OLLAMA_PROCESS, FLASK_PROCESS
-    
+
     if FLASK_PROCESS:
         print("[INFO] 🛑 Flask 서버 종료중...")
         FLASK_PROCESS.terminate()
@@ -104,16 +106,20 @@ def cleanup():
     if OLLAMA_PROCESS:
         print("[INFO] 🛑 Ollama 서버 종료중...")
         from models import ollama
+
         ollama.stopOllama(OLLAMA_PROCESS)
         OLLAMA_PROCESS = None
         print("[INFO] Ollama 서버가 종료되었습니다.")
+
 
 # TEST Sys path
 # print("[TEST] main.py / sys.path : ", sys.path)
 
 # Initialize
 if __name__ == "__main__":
-    try :
+    # Append File Path
+    sys.path.append(os.path.dirname(__file__))
+    try:
         activate_virtualenv()  # 가상환경 활성화
         install_requirements()  # 의존성 설치
         # print(f"[TEST] Main Python Executable: {sys.executable}")
@@ -125,11 +131,11 @@ if __name__ == "__main__":
         while True:
             time.sleep(5)
     except KeyboardInterrupt as k:
-        print(f"[INFO] 🛑 종료 요청 감지! 정리 중...")
-    
+        print(f"[INFO] 🛑 종료 요청 감지! 정리 중... : {k}")
+
     except Exception as e:
         print(f"[ERROR] 예외 발생 : {e}")
-    
+
     finally:
         cleanup()
 
