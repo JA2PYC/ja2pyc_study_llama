@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import time
 
 # VENV Settings
 VENV_PATH = os.path.join(os.path.dirname(__file__), "venv")
@@ -84,23 +85,53 @@ def run_flask():
         return
     
     print("[INFO] 🚀 Flask 서버 실행 중...")
-    print(f"[TEST] Main PID: {os.getpid()}")
-    print("[TEST] main.py run_flask / sys.path : ", sys.path)
-    subprocess.run([PYTHON_EXEC, "-m", "dashboard.app"])
+    # print(f"[TEST] Main PID: {os.getpid()}")
+    # print("[TEST] main.py run_flask / sys.path : ", sys.path)
+    # subprocess.run([PYTHON_EXEC, "-m", "dashboard.app"])
+    FLASK_PROCESS = subprocess.Popen([PYTHON_EXEC, "-m", "dashboard.app"])
 
+
+# Close Process
+def cleanup():
+    global OLLAMA_PROCESS, FLASK_PROCESS
+    
+    if FLASK_PROCESS:
+        print("[INFO] 🛑 Flask 서버 종료중...")
+        FLASK_PROCESS.terminate()
+        FLASK_PROCESS.wait()
+        print("[INFO] Flask 서버가 종료되었습니다.")
+
+    if OLLAMA_PROCESS:
+        print("[INFO] 🛑 Ollama 서버 종료중...")
+        from models import ollama
+        ollama.stopOllama(OLLAMA_PROCESS)
+        OLLAMA_PROCESS = None
+        print("[INFO] Ollama 서버가 종료되었습니다.")
 
 # TEST Sys path
 # print("[TEST] main.py / sys.path : ", sys.path)
 
 # Initialize
 if __name__ == "__main__":
-    activate_virtualenv()  # 가상환경 활성화
-    install_requirements()  # 의존성 설치
-    print(f"Main Python Executable: {sys.executable}")
-    print(f"Main Virtual Environment: {sys.prefix}")
-    print(f"Main PID: {os.getpid()}")
-    run_ollama()
-    run_flask()  # Flask 실행
+    try :
+        activate_virtualenv()  # 가상환경 활성화
+        install_requirements()  # 의존성 설치
+        # print(f"[TEST] Main Python Executable: {sys.executable}")
+        # print(f"[TEST] Main Virtual Environment: {sys.prefix}")
+        # print(f"[TEST] Main PID: {os.getpid()}")
+        run_ollama()
+        run_flask()  # Flask 실행
+
+        while True:
+            time.sleep(5)
+    except KeyboardInterrupt as k:
+        print(f"[INFO] 🛑 종료 요청 감지! 정리 중...")
+    
+    except Exception as e:
+        print(f"[ERROR] 예외 발생 : {e}")
+    
+    finally:
+        cleanup()
 
 # import os
 # import sys
