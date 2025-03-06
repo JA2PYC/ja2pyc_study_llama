@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 
-
+# VENV Settings
 VENV_PATH = os.path.join(os.path.dirname(__file__), "venv")
 PYTHON_EXEC = (
     os.path.join(VENV_PATH, "Scripts", "python.exe")
@@ -10,29 +10,42 @@ PYTHON_EXEC = (
     else os.path.join(VENV_PATH, "bin", "python")
 )
 REQUIREMENTS_FILE = "requirements.txt"
+
+# PATH
 DASHBOARD_PATH = os.path.join(os.path.dirname(__file__), "dashboard")
 
+# PROCESS
+OLLAMA_PROCESS = None
+FLASK_PROCESS = None
 
+
+# Create VENV
 def create_virtualenv():
     """가상환경이 없으면 생성"""
     if not os.path.exists(VENV_PATH):
-        print("⚙️  가상환경을 생성하는 중...")
+        print("[INFO] ⚙️ 가상환경을 생성하는 중...")
         subprocess.run([sys.executable, "-m", "venv", VENV_PATH], check=True)
 
 
+# Activate VENV
 def activate_virtualenv():
     """가상환경이 활성화되지 않으면 재실행"""
     if sys.prefix == sys.base_prefix:
-        print("🔍 가상환경이 감지되지 않았습니다. 자동으로 실행합니다.")
+        if os.environ.get("VIRTUAL_ENV_ACTIVE"):
+            print("[INFO] 🚨 가상환경 중복 실행 방지 : 실행 중단")
+            sys.exit(1)
+        os.environ["VIRTUAL_ENV_ACTIVE"] = "1"
+        print("[INFO] 🔍 가상환경이 감지되지 않았습니다. 자동으로 실행합니다.")
         create_virtualenv()
-        print(f"🚀 가상환경에서 다시 실행: {PYTHON_EXEC} {sys.argv}")
+        print(f"[INFO] 🚀 가상환경에서 다시 실행: {PYTHON_EXEC} {sys.argv}")
         subprocess.run([PYTHON_EXEC] + sys.argv)
         sys.exit()
 
 
+# Install VENV
 def install_requirements():
     """필요한 패키지를 설치"""
-    print("📦 패키지 설치 중...")
+    print("[INFO] 📦 패키지 설치 중...")
     if os.path.exists(REQUIREMENTS_FILE):
         subprocess.run(
             [PYTHON_EXEC, "-m", "pip", "install", "-r", REQUIREMENTS_FILE], check=True
@@ -41,35 +54,45 @@ def install_requirements():
         subprocess.run([PYTHON_EXEC, "-m", "pip", "install", "flask"], check=True)
 
 
-def run_flask():
-    """Flask 애플리케이션 실행"""
-    app_path = os.path.join(DASHBOARD_PATH, "app.py")
-    if not os.path.exists(app_path):
-        print(f"❌ {app_path} 파일이 존재하지 않습니다.")
-        return
-    print("🚀 Flask 서버 실행 중...")
-    print(f"Main PID: {os.getpid()}")
-    print("main.py run_flask / sys.path : ", sys.path)
-    print(DASHBOARD_PATH)
-    print(app_path)
-    subprocess.run([PYTHON_EXEC, "-m", "dashboard.app"])
-
+# Run Ollama
 def run_ollama():
     """Ollama Server 실행"""
-    from models import ollama
-    ollamaProcess = ollama.startOllama()
+    global OLLAMA_PROCESS
     
+    from models import ollama
+
+    ollamaProcess = ollama.startOllama()
+
     try:
         if ollamaProcess:
-            print ("[INFO] Ollama 서버가 실행 되었습니다.")
+            print("[INFO] Ollama 서버가 실행 되었습니다.")
     except Exception as e:
         print(f"[ERROR] Run Ollama : Ollama 서버 실행중 오류 발생 - {e}")
     finally:
         ollama.stopOllama(ollamaProcess)
 
-print("main.py / sys.path : ", sys.path)
 
-# Init
+# Run Flask
+def run_flask():
+    """Flask 애플리케이션 실행"""
+    
+    global FLASK_PROCESS
+    app_path = os.path.join(DASHBOARD_PATH, "app.py")
+    
+    if not os.path.exists(app_path):
+        print(f"❌ {app_path} 파일이 존재하지 않습니다.")
+        return
+    
+    print("[INFO] 🚀 Flask 서버 실행 중...")
+    print(f"[TEST] Main PID: {os.getpid()}")
+    print("[TEST] main.py run_flask / sys.path : ", sys.path)
+    subprocess.run([PYTHON_EXEC, "-m", "dashboard.app"])
+
+
+# TEST Sys path
+# print("[TEST] main.py / sys.path : ", sys.path)
+
+# Initialize
 if __name__ == "__main__":
     activate_virtualenv()  # 가상환경 활성화
     install_requirements()  # 의존성 설치
