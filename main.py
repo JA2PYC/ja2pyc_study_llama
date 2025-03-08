@@ -59,31 +59,33 @@ def install_requirements():
 def run_ollama():
     """Ollama Server 실행"""
     global OLLAMA_PROCESS
-    
     from models import ollama
 
-    ollamaProcess = ollama.startOllama()
-
-    try:
-        if ollamaProcess:
-            print("[INFO] Ollama 서버가 실행 되었습니다.")
-    except Exception as e:
-        print(f"[ERROR] Run Ollama : Ollama 서버 실행중 오류 발생 - {e}")
-    finally:
-        ollama.stopOllama(ollamaProcess)
+    if OLLAMA_PROCESS is None:
+        try:
+            OLLAMA_PROCESS = ollama.startOllama()
+            time.sleep(3)
+        except Exception as e:
+            print(f"[ERROR] Ollama 서버 실행중 오류 발생 : {e}")
+        finally:
+            if OLLAMA_PROCESS and OLLAMA_PROCESS.poll() is None:
+                print("[INFO] Ollama 서버가 실행 되었습니다.")
+            else:
+                print("[ERROR] Ollama 서버 실행에 실패했습니다.")
+                OLLAMA_PROCESS = None
 
 
 # Run Flask
 def run_flask():
     """Flask 애플리케이션 실행"""
-    
+
     global FLASK_PROCESS
     app_path = os.path.join(DASHBOARD_PATH, "app.py")
-    
+
     if not os.path.exists(app_path):
         print(f"❌ {app_path} 파일이 존재하지 않습니다.")
         return
-    
+
     print("[INFO] 🚀 Flask 서버 실행 중...")
     # print(f"[TEST] Main PID: {os.getpid()}")
     # print("[TEST] main.py run_flask / sys.path : ", sys.path)
@@ -94,7 +96,7 @@ def run_flask():
 # Close Process
 def cleanup():
     global OLLAMA_PROCESS, FLASK_PROCESS
-    
+
     if FLASK_PROCESS:
         print("[INFO] 🛑 Flask 서버 종료중...")
         FLASK_PROCESS.terminate()
@@ -104,16 +106,20 @@ def cleanup():
     if OLLAMA_PROCESS:
         print("[INFO] 🛑 Ollama 서버 종료중...")
         from models import ollama
+
         ollama.stopOllama(OLLAMA_PROCESS)
         OLLAMA_PROCESS = None
         print("[INFO] Ollama 서버가 종료되었습니다.")
+
 
 # TEST Sys path
 # print("[TEST] main.py / sys.path : ", sys.path)
 
 # Initialize
 if __name__ == "__main__":
-    try :
+    # Append File Path
+    sys.path.append(os.path.dirname(__file__))
+    try:
         activate_virtualenv()  # 가상환경 활성화
         install_requirements()  # 의존성 설치
         # print(f"[TEST] Main Python Executable: {sys.executable}")
@@ -125,196 +131,10 @@ if __name__ == "__main__":
         while True:
             time.sleep(5)
     except KeyboardInterrupt as k:
-        print(f"[INFO] 🛑 종료 요청 감지! 정리 중...")
-    
+        print(f"[INFO] 🛑 종료 요청 감지! 정리 중... : {k}")
+
     except Exception as e:
         print(f"[ERROR] 예외 발생 : {e}")
-    
+
     finally:
         cleanup()
-
-# import os
-# import sys
-# import subprocess
-
-
-# print("Main", sys.executable)
-
-# def create_virtualenv():
-#     """Create a virtual environment if it doesn't exist."""
-#     if not os.path.exists("venv"):
-#         print("Creating a virtual environment...")
-#         try:
-#             subprocess.run(["python", "-m", "venv", "venv"], check=True)
-#             print("Successfully created virtual environment.")
-#         except subprocess.CalledProcessError as e:
-#             print(f"Failed to create a virtual environment: {e}")
-#             sys.exit(1)
-
-
-# def activate_virtualenv():
-#     """Ensure the script runs inside the virtual environment."""
-#     venv_python = os.path.join(
-#         "venv", "Scripts" if os.name == "nt" else "bin", "python"
-#     )
-#     print("VENV", sys.executable)
-#     if sys.executable != os.path.abspath(venv_python):
-#         print("Restarting script inside the virtual environment...")
-#         print("Subprocess", sys.executable)
-#         subprocess.run([venv_python] + sys.argv)
-#         # sys.exit(0)
-
-
-# def install_dependencies():
-#     """Install dependencies from requirements.txt."""
-#     requirements_file = "requirements.txt"
-#     if not os.path.exists(requirements_file) or os.path.getsize(requirements_file) == 0:
-#         print(
-#             "Skipping dependency installation (no requirements.txt or file is empty)."
-#         )
-#         return
-
-#     print("Installing dependencies...")
-#     try:
-#         subprocess.run(
-#             [sys.executable, "-m", "pip", "install", "--upgrade", "pip"], check=True
-#         )
-#         subprocess.run(
-#             [sys.executable, "-m", "pip", "install", "-r", requirements_file],
-#             check=True,
-#         )
-#         print("Dependencies installed successfully.")
-#     except subprocess.CalledProcessError as e:
-#         print(f"Failed to install dependencies: {e}")
-#         sys.exit(1)
-
-
-# def run_flask_app():
-#     """Run the Flask application."""
-#     try:
-#         from dashboard import create_app
-
-#         print("Creating Flask app...")
-#         app = create_app()
-#         app.run(debug=True)
-#     except ImportError as e:
-#         print(f"Flask App Import Error: {e}")
-#         sys.exit(1)
-#     except Exception as e:
-#         print(f"Flask App Exception: {e}")
-#         sys.exit(1)
-
-
-# def main():
-#     create_virtualenv()
-#     print("Create", sys.executable)
-#     activate_virtualenv()
-#     print("Activate", sys.executable)
-#     install_dependencies()
-#     run_flask_app()
-
-
-# if __name__ == "__main__":
-#     if "FLASK_RUN_FROM_CLI" not in os.environ:
-#         main()
-
-# # import os
-# # import sys
-# # import subprocess
-
-# # # Create Virtual Environment.
-# # def create_virtualenv():
-# #     """Create a virtual environment."""
-# #     if not os.path.exists("venv"):
-# #         print("Creating a virtual environment...")
-# #         try:
-# #             subprocess.run(["python", "-m", "venv", "venv"], check=True)
-# #             print("Successfully created virtual environment.")
-# #         except subprocess.CalledProcessError as e:
-# #             print(f"Failed to create a virtual environment : {e}")
-# #             sys.exit(1)
-# #         except Exception as e:
-# #             print(f"Failed to create a virtual environment : {e}")
-# #             sys.exit(1)
-
-
-# # def activate_virtualenv():
-# #     """Activate a virtual environment."""
-# #     if os.environ.get("VIRTUAL_ENV"):
-# #         print("Virtual environment is already activated.")
-# #         return
-
-# #     venv_python = os.path.join(
-# #         "venv", "Scripts" if os.name == "nt" else "bin", "python"
-# #     )
-# #     activate_script = os.path.join(
-# #         "venv", "Scripts" if os.name == "nt" else "bin", "activate"
-# #     )
-# #     if not os.path.exists(activate_script):
-# #         print("Cannot find a venv script.")
-# #         sys.exit(1)
-
-# #     if sys.executable != os.path.abspath(venv_python):
-# #         os.environ["VIRTUAL_ENV"] = os.path.abspath("venv")
-# #         os.environ["PATH"] = os.path.join("venv", "bin") + os.pathsep + os.environ["PATH"]
-# #         print("Restart script inside the virtual environment.")
-# #         os.execv(venv_python, [venv_python] + sys.argv)
-# #     print("Activate a virtual environment.")
-
-
-# # def install_dependencies():
-# #     """Install Dependencies.."""
-# #     if os.environ.get("DEPENDENCIES_CHECKED"):
-# #         print("Already checked dependencies.")
-# #         return
-# #     requirements_file = "requirements.txt"
-# #     if not os.path.exists(requirements_file):
-# #         print("Cannot find a requirements.txt. Skip install dependenceis.")
-# #         return
-
-# #     if os.path.getsize(requirements_file) == 0:
-# #         print("File is empty. Skip install dependencies.")
-# #         return
-
-# #     print("Install dependencies.")
-# #     try:
-# #         subprocess.check_call(
-# #             [sys.executable, "-m", "pip", "install", "--upgrade", "pip"]
-# #         )
-# #         subprocess.check_call(
-# #             [sys.executable, "-m", "pip", "install", "-r", requirements_file]
-# #         )
-# #         os.environ["DEPENDENCIES_CHECKED"] = "true"
-# #         print("Complete install dependencies.")
-# #     except Exception as e:
-# #         print(f"Failed to install dependencies : {e}")
-# #         sys.exit(1)
-
-
-# # def run_flask_app():
-# #     """Run main"""
-# #     try:
-# #         from dashboard import create_app
-
-# #         print("Create flask app")
-# #         app = create_app()
-
-# #         app.run(debug=True)
-# #     except ImportError as e:
-# #         print(f"Flask App Import Error : {e}")
-# #         sys.exit(1)
-# #     except Exception as e:
-# #         print(f"Flask App Exception : {e}")
-# #         sys.exit(1)
-
-
-# # def main():
-# #     create_virtualenv()
-# #     activate_virtualenv()
-# #     install_dependencies()
-# #     run_flask_app()
-
-
-# # if __name__ == "__main__":
-# #     if "FLASK_RUN_FROM_CLI" not in os.environ:
-# #         main()
