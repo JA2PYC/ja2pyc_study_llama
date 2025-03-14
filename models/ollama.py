@@ -12,24 +12,12 @@ def checkOllama():
     try:
         ollama_path = shutil.which("ollama")
         if ollama_path is None:
-            installOllama()
-        else :
-            print (f"[INFO] ✅ OLLAMA 가 설치되어 있습니다. - {ollama_path}")
+            print(f"[INFO] ℹ️ℹ OLLAMA 설치를 진행합니다. - {ollama_path}")
+            # installOllama()
+        else:
+            print(f"[INFO] ✅ OLLAMA 가 설치되어 있습니다. - {ollama_path}")
     except Exception as e:
-        print (f"[ERROR] ⛔ OLLAMA 환경 확인 중 오류가 발생했습니다. - {e}")
-
-# Ollama 확인
-# def checkOllama():
-#     """Ollama 확인"""
-#     try:
-#         if libutil.find_spec("ollama") is None:
-#             installOllama()
-#     except subprocess.CalledProcessError as e:
-#         print(f"[ERROR] ⛔ OLLAMA 패키지 설치에 실패했습니다. - {e}")
-#         sys.exit(1)
-#     except Exception as e:
-#         print(f"[ERROR] ⛔ OLLAMA 환경 확인중 오류가 발생했습니다. - {e}")
-#         sys.exit(1)
+        print(f"[ERROR] ⛔ OLLAMA 환경 확인 중 오류가 발생했습니다. - {e}")
 
 
 def installOllama():
@@ -62,17 +50,6 @@ def installOllama():
     except Exception as e:
         print(f"[ERROR] OLLAMA : Install Ollama - {e}")
         sys.exit(1)
-
-
-# Ollama 설치 Python Ollama Library
-# def installOllama():
-#     """Ollama 설치"""
-#     try:
-#         print(f"[INFO] 📦 OLLAMA 가 설치되어 있지 않습니다. 자동으로 설치합니다.")
-#         subprocess.run([sys.executable, "-m", "pip", "install", "ollama"], check=True)
-#     except Exception as e:
-#         print(f"[ERROR] ⛔ OLLAMA 패키지 설치에 실패 했습니다. - {e}")
-#         sys.exit(1)
 
 
 def startOllama():
