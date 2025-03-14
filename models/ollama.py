@@ -13,7 +13,7 @@ def checkOllama():
         ollama_path = shutil.which("ollama")
         if ollama_path is None:
             print(f"[INFO] ℹ️ℹ OLLAMA 설치를 진행합니다. - {ollama_path}")
-            # installOllama()
+            installOllama()
         else:
             print(f"[INFO] ✅ OLLAMA 가 설치되어 있습니다. - {ollama_path}")
     except Exception as e:
