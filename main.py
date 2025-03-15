@@ -68,8 +68,9 @@ def run_ollama():
         except Exception as e:
             print(f"[ERROR] Ollama 서버 실행중 오류 발생 : {e}")
         finally:
+            print(f"[TEST] Ollama - {OLLAMA_PROCESS}")
             if OLLAMA_PROCESS and OLLAMA_PROCESS.poll() is None:
-                print("[INFO] Ollama 서버가 실행 되었습니다.")
+                print("[INFO] 🦙 Ollama 서버가 실행 되었습니다.")
             else:
                 print("[ERROR] Ollama 서버 실행에 실패했습니다.")
                 OLLAMA_PROCESS = None
