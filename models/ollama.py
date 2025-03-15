@@ -175,7 +175,7 @@ def startOllama():
         return None
 
 
-def stopOllama(process):
+def stopOllama():
     """Ollama 프로세스 종료"""
     try:
         pid = checkProcessPort()

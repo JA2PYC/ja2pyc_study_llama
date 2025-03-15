@@ -108,9 +108,9 @@ def cleanup():
         print("[INFO] 🛑 Ollama 서버 종료중...")
         from models import ollama
 
-        ollama.stopOllama(OLLAMA_PROCESS)
+        ollama.stopOllama()
         OLLAMA_PROCESS = None
-        print("[INFO] Ollama 서버가 종료되었습니다.")
+        print("[INFO] ℹ️ Ollama 서버가 종료되었습니다.")
 
 
 # TEST Sys path
