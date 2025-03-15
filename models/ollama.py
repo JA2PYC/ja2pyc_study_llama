@@ -140,8 +140,19 @@ def startOllama():
         # Ollama 실행
         if existing_pid:
             print(f"[INFO] ℹ️ Ollama가 이미 실행 중입니다. PID : {existing_pid}")
-            # process = psutil.Process(existing_pid)
             return psutil.Process(existing_pid)
+            # try:
+            #     existing_process = psutil.Process(existing_pid)
+            #     process = subprocess.Popen(
+            #         ["ollama", "serve"],
+            #         stdout=subprocess.PIPE,
+            #         stderr=subprocess.PIPE,
+            #         text=True,
+            #         preexec_fn=lambda: existing_process,
+            #     )
+            # except psutil.NoSuchProcess:
+            #     print(f"[ERROR] ⛔ 기존 OLLAMA 프로세스를 찾을 수 없습니다.")
+            #     return None
         else:
             process = subprocess.Popen(
                 ["ollama", "serve"],
@@ -150,15 +161,13 @@ def startOllama():
                 text=True,
             )
             time.sleep(3)
+            if process.poll() is not None:
+                stderr_output = process.stderr.read()
+                print(f"[ERROR] ⛔ OLLAMA 실행 오류 - {stderr_output}")
+                return None
 
         print(f"[TEST] ☑️ startOllama - {process}")
-
-        if process.poll() is not None:
-            stderr_output = process.stderr.read()
-            print(f"[ERROR] ⛔ OLLAMA 실행 오류 - {stderr_output}")
-            return None
-
-        print(f"[INFO] 🦙 OLLAMA 프로세스가 실행 되었습니다.")
+        print(f"[INFO] 🦙 OLLAMA 프로세스가 실행 되었습니다. PID : {process.pid}")
         return process
 
     except Exception as e:
@@ -168,12 +177,20 @@ def startOllama():
 
 def stopOllama(process):
     """Ollama 프로세스 종료"""
-    try: 
-        if process:
+    try:
+        pid = checkProcessPort()
+        if pid:
+            process = psutil.Process(pid)
             process.terminate()
             process.wait()
-            print(f"[INFO] OLLAMA : Ollama 서버가 종료되었습니다. - {process}")
-        else :
-            print(f"[INFO] ℹ️ OLLAMA 가 실해중이 아닙니다. - {process}")
+            print(f"[INFO] ✅ OLLAMA가 종료되었습니다. PID : {pid}")
+        else:
+            print(f"[INFO] ℹ️ 실행 중인 OLLAMA 프로세스가 없습니다.")
+        # if process:
+        #     process.terminate()
+        #     process.wait()
+        #     print(f"[INFO] OLLAMA : Ollama 서버가 종료되었습니다. - {process}")
+        # else:
+        #     print(f"[INFO] ℹ️ OLLAMA 가 실해중이 아닙니다. - {process}")
     except Exception as e:
         print(f"[ERROR] ⛔ OLLAMA 종료 오류 - {e}")
