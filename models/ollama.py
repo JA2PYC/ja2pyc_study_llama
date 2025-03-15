@@ -7,6 +7,7 @@ import platform
 import psutil
 
 OLLAMA_PORT = 11434
+MAX_WAIT_TIME = 10
 
 
 # Ollama Binary 확인
@@ -72,61 +73,80 @@ def installOllama():
 
 def checkProcessPort():
     """Ollama Process 확인"""
-    system = platform.system().lower()
-
     try:
-        if system == "windows":
-            result_netstat = subprocess.run(
-                ["netstat", "-ano"], capture_output=True, text=True
-            )
-            pid = None
-            for line in result_netstat.stdout.splitlines():
-                if f":{OLLAMA_PORT}" in line:
-                    parts = line.split()
-                    pid = parts[-1]
-                    break
-            if not pid:
-                return None
+        for process in psutil.process_iter(attrs=["pid", "name"]):
+            # print(f"[INFO] ℹ️ checkProcessPort - {process}")
 
-            result_tasklist = subprocess.run(
-                ["tasklist", "/FI", f"PID eq {pid}"], capture_output=True, text=True
-            )
-            for line in result_tasklist.stdout.splitlines():
-                if "ollama.exe" in line.lower():
-                    return int(pid)
+            if "ollama" in str(process.info["name"]).lower():
+                for conn in process.net_connections(kind="inet"):
+                    if conn.laddr.port == OLLAMA_PORT:
+                        print(
+                            f"[INFO] ℹ️ OLLAMA 프로세스를 확인했습니다. PID : {process.info['pid']}"
+                        )
+                        return process.info["pid"]
 
-            return None
-
-        elif system in ["linux", "darwin"]:
-            result_netstat = subprocess.run(
-                ["netstat", "-tulnp"], capture_output=True, text=True
-            )
-            pid = None
-            for line in result_netstat.stdout.splitlines():
-                if f":{OLLAMA_PORT}" in line:
-                    parts = line.split()
-                    pid = parts[-1].split("/")[0]
-                    break
-
-            if not pid:
-                return None
-
-            result_ps = subprocess.run(
-                ["ps", "-p", pid, "-o", "comm="], capture_output=True, text=True
-            )
-            process_name = result_ps.stdout.strip()
-            if process_name == "ollama":
-                return int(pid)
-
-            return None
-
-        else:
-            print(f"[ERROR] ⛔ 지원하지 않는 운영체제 - {system.capitalize()}")
-            return None
-
-    except Exception as e:
+    except (psutil.AccessDenied, psutil.NoSuchProcess, TypeError) as e:
         print(f"[ERROR] ⛔ OLLAMA 프로세스 확인 중 오류 발생 - {e}")
         return None
+    except Exception as e:
+        print(f"[ERROR] ⛔ OLLAMA 포르세스 확인 중 오류 발생 - {e}")
+        return None
+
+    # system = platform.system().lower()
+
+    # try:
+    #     if system == "windows":
+    #         result_netstat = subprocess.run(
+    #             ["netstat", "-ano"], capture_output=True, text=True
+    #         )
+    #         pid = None
+    #         for line in result_netstat.stdout.splitlines():
+    #             if f":{OLLAMA_PORT}" in line:
+    #                 parts = line.split()
+    #                 pid = parts[-1]
+    #                 break
+    #         if not pid:
+    #             return None
+
+    #         result_tasklist = subprocess.run(
+    #             ["tasklist", "/FI", f"PID eq {pid}"], capture_output=True, text=True
+    #         )
+    #         for line in result_tasklist.stdout.splitlines():
+    #             if "ollama.exe" in line.lower():
+    #                 return int(pid)
+
+    #         return None
+
+    #     elif system in ["linux", "darwin"]:
+    #         result_netstat = subprocess.run(
+    #             ["netstat", "-tulnp"], capture_output=True, text=True
+    #         )
+    #         pid = None
+    #         for line in result_netstat.stdout.splitlines():
+    #             if f":{OLLAMA_PORT}" in line:
+    #                 parts = line.split()
+    #                 pid = parts[-1].split("/")[0]
+    #                 break
+
+    #         if not pid:
+    #             return None
+
+    #         result_ps = subprocess.run(
+    #             ["ps", "-p", pid, "-o", "comm="], capture_output=True, text=True
+    #         )
+    #         process_name = result_ps.stdout.strip()
+    #         if process_name == "ollama":
+    #             return int(pid)
+
+    #         return None
+
+    #     else:
+    #         print(f"[ERROR] ⛔ 지원하지 않는 운영체제 - {system.capitalize()}")
+    #         return None
+
+    # except Exception as e:
+    #     print(f"[ERROR] ⛔ OLLAMA 프로세스 확인 중 오류 발생 - {e}")
+    #     return None
 
 
 def startOllama():
@@ -140,38 +160,50 @@ def startOllama():
         # Ollama 실행
         if existing_pid:
             print(f"[INFO] ℹ️ Ollama가 이미 실행 중입니다. PID : {existing_pid}")
-            return psutil.Process(existing_pid)
-            # try:
-            #     existing_process = psutil.Process(existing_pid)
-            #     process = subprocess.Popen(
-            #         ["ollama", "serve"],
-            #         stdout=subprocess.PIPE,
-            #         stderr=subprocess.PIPE,
-            #         text=True,
-            #         preexec_fn=lambda: existing_process,
-            #     )
-            # except psutil.NoSuchProcess:
-            #     print(f"[ERROR] ⛔ 기존 OLLAMA 프로세스를 찾을 수 없습니다.")
-            #     return None
-        else:
+            return existing_pid
+
+        try:
             process = subprocess.Popen(
                 ["ollama", "serve"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
             )
-            time.sleep(3)
-            if process.poll() is not None:
-                stderr_output = process.stderr.read()
-                print(f"[ERROR] ⛔ OLLAMA 실행 오류 - {stderr_output}")
-                return None
+
+            # time.sleep(3)
+            start_time = time.time()
+
+            while time.time() - start_time < MAX_WAIT_TIME:
+                time.sleep(1)
+
+                new_pid = checkProcessPort()
+
+                if new_pid:
+                    if process.poll() is not None:
+                        stderr_output = process.stderr.read()
+                        print(f"[ERROR] ⛔ OLLAMA 실행 오류 - {stderr_output}")
+                        return None
+                    print(f"[INFO] ✅ OLLAMA 실행 완료. PID : {new_pid}")
+                    return new_pid
+
+        except Exception as e:
+            print(f"[ERROR] ⛔ OLLAMA 프로세스 실행 중 오류 발생 - {e}")
+            return None
 
         print(f"[TEST] ☑️ startOllama - {process}")
-        print(f"[INFO] 🦙 OLLAMA 프로세스가 실행 되었습니다. PID : {process.pid}")
-        return process
+
+        new_pid = checkProcessPort()
+
+        if new_pid:
+            print(f"[INFO] 🦙 OLLAMA 프로세스가 실행 되었습니다. PID : {process.pid}")
+            return new_pid
+
+        else:
+            print(f"[ERROR] ⛔ OLLAMA 프로세스 실행 실패 - {new_pid}")
+            return None
 
     except Exception as e:
-        print(f"[ERROR] ⛔ OLLAMA : Start Ollama - {e}")
+        print(f"[ERROR] ⛔ OLLAMA 실행 중 오류 발생 - {e}")
         return None
 
 
@@ -180,10 +212,15 @@ def stopOllama():
     try:
         pid = checkProcessPort()
         if pid:
-            process = psutil.Process(pid)
-            process.terminate()
-            process.wait()
-            print(f"[INFO] ✅ OLLAMA가 종료되었습니다. PID : {pid}")
+            try:
+                process = psutil.Process(pid)
+                process.terminate()
+                process.wait()
+                print(f"[INFO] ✅ OLLAMA가 종료되었습니다. PID : {pid}")
+            except psutil.NoSuchProcess:
+                print(f"[INFO] ℹ️ 이미 종료된 프로세스 입니다.")
+            except Exception as e:
+                print(f"[ERROR] ⛔ 프로세스 종료 중 오류 발생 - {e}")
         else:
             print(f"[INFO] ℹ️ 실행 중인 OLLAMA 프로세스가 없습니다.")
         # if process:
