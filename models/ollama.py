@@ -10,20 +10,39 @@ OLLAMA_PORT = 11434
 MAX_WAIT_TIME = 10
 
 
-# Ollama Binary 확인
+# OLLAMA 설치 확인
 def checkOllama():
     """Ollama Bianry 확인"""
     try:
-        ollama_path = shutil.which("ollama")
-        if ollama_path is None:
-            print(f"[INFO] ℹ️ OLLAMA가 설치되어 있지 않습니다. 설치를 진행합니다.")
-            installOllama()
+        subprocess.run(
+            ["ollama", "--version"], capture_output=True, check=True, text=True
+        )
+        print(f"[INFO] ✅ OLLAMA가 설치되어 있습니다.")
+        return True
+    except FileNotFoundError:
+        print(f"[INFO] ℹ️ OLLAMA가 설치되어 있지 않습니다. 설치를 진행합니다.")
+        response = installOllama()
+
+        if response == True:
+            return True
         else:
-            print(f"[INFO] ✅ OLLAMA 가 설치되어 있습니다. - {ollama_path}")
+            return False
     except Exception as e:
-        print(f"[ERROR] ⛔ OLLAMA 환경 확인 중 오류가 발생했습니다. - {e}")
+        print(f"[ERROR] ⛔ OLLAMA 환경 확인 중 오류 발생 - {e}")
+        return False
+
+    # try:
+    #     ollama_path = shutil.which("ollama")
+    #     if ollama_path is None:
+    #         print(f"[INFO] ℹ️ OLLAMA가 설치되어 있지 않습니다. 설치를 진행합니다.")
+    #         installOllama()
+    #     else:
+    #         print(f"[INFO] ✅ OLLAMA 가 설치되어 있습니다. - {ollama_path}")
+    # except Exception as e:
+    #     print(f"[ERROR] ⛔ OLLAMA 환경 확인 중 오류 발생 - {e}")
 
 
+# OLLAMA 설치
 def installOllama():
     """Ollama Binary 설치"""
     try:
@@ -31,46 +50,44 @@ def installOllama():
 
         if system == "windows":
             print(
-                f"[INFO] 📦 OLLAMA 가 설치되어 있지 않습니다. {system.capitalize()}에 Ollama를 자동으로 설치합니다."
+                f"[INFO] 📦 OLLAMA 가 설치되어 있지 않습니다. {system.capitalize()}에 OLLAMA를 설치합니다."
             )
-            try:
-                subprocess.run(
-                    ["winget", "install", "--id=Ollama.Ollama", "-e"], check=True
-                )
-            except FileNotFoundError:
-                print(
-                    "[ERROR] ⛔ Winget이 설치되어 있지 않습니다. 수동으로 Ollama를 설치하세요. https://ollama.com"
-                )
-                sys.exit(1)
-            except Exception as e:
-                print(
-                    f"[ERROR] ⛔ {system.capitalize()}에 Ollama를 설치하는 중 예상치 못한 오류가 발생했습니다. - {e}"
-                )
+            subprocess.run(
+                ["winget", "install", "--id=Ollama.Ollama", "-e"], check=True
+            )
         elif system in ["linux", "darwin"]:
             print(
-                f"[INFO] 📦 OLLAMA 가 설치되어 있지 않습니다. {system.capitalize()} Ollama를 자동으로 설치합니다."
+                f"[INFO] 📦 OLLAMA 가 설치되어 있지 않습니다. {system.capitalize()} OLLAMA를 설치합니다."
             )
             subprocess.run(
                 # ["curl", "-fsSL", "https://ollama.com/install.sh", "|", "sh"],
-                ["curl -fsSL https://ollama.com/install.sh | sh"],
+                "curl -fsSL https://ollama.com/install.sh | sh",
                 check=True,
                 shell=True,
             )
         else:
             print(f"[ERROR] ⛔ 지원하지 않는 운영 체제 - {system.capitalize()}")
-            sys.exit(1)
+            return False
 
         print(f"[INFO] ✅ OLLAMA 설치에 성공했습니다. - {system.capitalize()}")
+        return True
 
+    except FileNotFoundError:
+        print(
+            "[ERROR] ⛔ 자동 설치를 진행할 수 없습니다. 수동으로 Ollama를 설치하세요. https://ollama.com"
+        )
+        return False
     except subprocess.CalledProcessError as e:
         print(f"[ERROR] ⛔ OLLAMA 설치 실패 - {e}")
-        sys.exit(1)
-
+        return False
     except Exception as e:
-        print(f"[ERROR] ⛔ OLLAMA : Install Ollama - {e}")
-        sys.exit(1)
+        print(
+            f"[ERROR] ⛔ {system.capitalize()}에 OLLAMA 설치 중 오류가 발생했습니다. - {e}"
+        )
+        return False
 
 
+# OLLAMA 실행 확인
 def checkProcessPort():
     """Ollama Process 확인"""
     try:
@@ -83,13 +100,13 @@ def checkProcessPort():
                         print(
                             f"[INFO] ℹ️ OLLAMA 프로세스를 확인했습니다. PID : {process.info['pid']}"
                         )
-                        return process.info["pid"]
+                        return int(process.info["pid"])
 
     except (psutil.AccessDenied, psutil.NoSuchProcess, TypeError) as e:
         print(f"[ERROR] ⛔ OLLAMA 프로세스 확인 중 오류 발생 - {e}")
         return None
     except Exception as e:
-        print(f"[ERROR] ⛔ OLLAMA 포르세스 확인 중 오류 발생 - {e}")
+        print(f"[ERROR] ⛔ OLLAMA 프프르세스 확인 중 오류 발생 - {e}")
         return None
 
     # system = platform.system().lower()
@@ -149,6 +166,7 @@ def checkProcessPort():
     #     return None
 
 
+# OLLAMA 실행
 def startOllama():
     """Ollama 실행 / 프로세스 반환"""
     try:
@@ -159,7 +177,7 @@ def startOllama():
 
         # Ollama 실행
         if existing_pid:
-            print(f"[INFO] ℹ️ Ollama가 이미 실행 중입니다. PID : {existing_pid}")
+            print(f"[INFO] ℹ️ OLLAMA가 이미 실행 중입니다. PID : {existing_pid}")
             return existing_pid
 
         try:
@@ -192,15 +210,15 @@ def startOllama():
 
         print(f"[TEST] ☑️ startOllama - {process}")
 
-        new_pid = checkProcessPort()
+        # new_pid = checkProcessPort()
 
-        if new_pid:
-            print(f"[INFO] 🦙 OLLAMA 프로세스가 실행 되었습니다. PID : {process.pid}")
-            return new_pid
+        # if new_pid:
+        #     print(f"[INFO] 🦙 OLLAMA 프로세스가 실행 되었습니다. PID : {process.pid}")
+        #     return new_pid
 
-        else:
-            print(f"[ERROR] ⛔ OLLAMA 프로세스 실행 실패 - {new_pid}")
-            return None
+        # else:
+        #     print(f"[ERROR] ⛔ OLLAMA 프로세스 실행 실패 - {new_pid}")
+        #     return None
 
     except Exception as e:
         print(f"[ERROR] ⛔ OLLAMA 실행 중 오류 발생 - {e}")
