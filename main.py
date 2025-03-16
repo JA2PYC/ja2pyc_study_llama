@@ -69,10 +69,10 @@ def run_ollama():
             print(f"[ERROR] Ollama 서버 실행중 오류 발생 : {e}")
         finally:
             print(f"[TEST] Ollama - {OLLAMA_PROCESS}")
-            if OLLAMA_PROCESS and OLLAMA_PROCESS.poll() is None:
+            if OLLAMA_PROCESS:
                 print("[INFO] 🦙 Ollama 서버가 실행 되었습니다.")
             else:
-                print("[ERROR] Ollama 서버 실행에 실패했습니다.")
+                print("[ERROR] ⛔ Ollama 서버 실행에 실패했습니다.")
                 OLLAMA_PROCESS = None
 
 
@@ -108,9 +108,9 @@ def cleanup():
         print("[INFO] 🛑 Ollama 서버 종료중...")
         from models import ollama
 
-        ollama.stopOllama(OLLAMA_PROCESS)
+        ollama.stopOllama()
         OLLAMA_PROCESS = None
-        print("[INFO] Ollama 서버가 종료되었습니다.")
+        print("[INFO] ℹ️ Ollama 서버가 종료되었습니다.")
 
 
 # TEST Sys path
