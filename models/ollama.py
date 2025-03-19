@@ -22,11 +22,7 @@ def checkOllama():
     except FileNotFoundError:
         print(f"[INFO] ℹ️ OLLAMA가 설치되어 있지 않습니다. 설치를 진행합니다.")
         response = installOllama()
-
-        if response == True:
-            return True
-        else:
-            return False
+        return response
     except Exception as e:
         print(f"[ERROR] ⛔ OLLAMA 환경 확인 중 오류 발생 - {e}")
         return False
@@ -92,8 +88,7 @@ def checkProcessPort():
     """Ollama Process 확인"""
     try:
         for process in psutil.process_iter(attrs=["pid", "name"]):
-            # print(f"[INFO] ℹ️ checkProcessPort - {process}")
-
+            # print(f"[TEST] ☑️ checkProcessPort - {process}")
             if "ollama" in str(process.info["name"]).lower():
                 for conn in process.net_connections(kind="inet"):
                     if conn.laddr.port == OLLAMA_PORT:
@@ -171,7 +166,11 @@ def startOllama():
     """Ollama 실행 / 프로세스 반환"""
     try:
         # Ollama 설치 확인
-        checkOllama()
+        check_result = checkOllama()
+        
+        if check_result == False:
+            return False
+        
         # Ollama 실행 확인
         existing_pid = checkProcessPort()
 
@@ -206,9 +205,9 @@ def startOllama():
 
         except Exception as e:
             print(f"[ERROR] ⛔ OLLAMA 프로세스 실행 중 오류 발생 - {e}")
-            return None
+            return False
 
-        print(f"[TEST] ☑️ startOllama - {process}")
+        # print(f"[TEST] ☑️ startOllama - {process}")
 
         # new_pid = checkProcessPort()
 
