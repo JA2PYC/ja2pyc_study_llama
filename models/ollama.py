@@ -167,10 +167,10 @@ def startOllama():
     try:
         # Ollama 설치 확인
         check_result = checkOllama()
-        
+
         if check_result == False:
             return False
-        
+
         # Ollama 실행 확인
         existing_pid = checkProcessPort()
 
