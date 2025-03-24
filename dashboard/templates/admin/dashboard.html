@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>관리자 페이지</h1>
+    
+    {% if status.db_error %}
+        <p class="error">❌ 데이터베이스 오류: {{ status.db_error }}</p>
+    {% else %}
+        <p class="success">✅ 데이터베이스가 정상적으로 작동 중입니다.</p>
+    {% endif %}
+</body>
+</html>
