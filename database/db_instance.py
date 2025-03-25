@@ -27,7 +27,7 @@ STATUS_FILE = "db_status.json"
 def save_status(error_message=None):
     status = {"db_error": error_message}
     with open(STATUS_FILE, "w") as f:
-        json.dum(status, f)
+        json.dump(status, f)
 
 
 class Database:
@@ -39,22 +39,14 @@ class Database:
             with cls._lock:
                 if not cls._instance:
                     cls._instance = super(Database, cls).__new__(cls)
-                    cls._instance.engine = create_engine(
-                        DATABASE_URL,
-                        pool_size=10,  # 유지할 최대 연결 수
-                        max_overflow=20,  # 초과 허용할 추가 연결 수
-                        pool_recycle=1800,  # 연결 재사용 주기 (초)
-                        pool_pre_ping=True,  # 연결 유지 체크
-                    )
-                    cls._instance.SessionLocal = sessionmaker(
-                        bind=cls._instance.engine, autocommit=False, autoflush=False
-                    )
+                    cls._instance._init_db()
         return cls._instance
 
     # DB 초기화
     def _init_db(self):
         try:
             self._create_database_if_not_exists()
+
             self.engine = create_engine(
                 DATABASE_URL,
                 pool_size=10,
@@ -75,33 +67,34 @@ class Database:
     def _create_database_if_not_exists(self):
         try:
             engine = create_engine(DATABASE_URL_DEFAULT)
-            conn = engine.connect()
-            conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}"))
-            conn.close()
+            with engine.connect() as conn:
+                conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}"))
+                conn.commit()
 
             engine = create_engine(DATABASE_URL)
-            conn = engine.connect()
-            conn.execute(
-                text(
-                    """
-                CREATE TABLE IF NOT EXISTS 
-                users (id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                email VARCHAR(100) UNIQUE NOT NULL
-                );
-                """
-                )
-            )
-            result = conn.execute(text("SELECT COUNT(*) FROM users)"))
-            count = result.scalar()
-            if count == 0:
+            with engine.connect() as conn:
                 conn.execute(
                     text(
-                        "INSERT INTO users (name, email) VALUES ('admin', 'admin@llmaquarium.com');"
+                        """
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(100) NOT NULL,
+                        email VARCHAR(100) UNIQUE NOT NULL
+                    );
+                    """
                     )
                 )
+                conn.commit()
 
-            conn.close()
+                result = conn.execute(text("SELECT COUNT(*) FROM users"))
+                count = result.scalar() or 0
+                if count == 0:
+                    conn.execute(
+                        text(
+                            "INSERT INTO users (name, email) VALUES ('admin', 'admin@llmaquarium.com');"
+                        )
+                    )
+                    conn.commit()
         except OperationalError as e:
             save_status(f"DB 생성 실패 : {str(e)}")
 
@@ -111,7 +104,7 @@ class Database:
             yield db
         finally:
             db.close()
-            
+
     def get_session(self):
         if self.SessionLocal:
             return self.SessionLocal()
