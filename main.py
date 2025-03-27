@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import time
+from logger import logger
 
 # VENV Settings
 VENV_PATH = os.path.join(os.path.dirname(__file__), "venv")

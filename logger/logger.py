@@ -4,6 +4,10 @@ from logging.handlers import RotatingFileHandler
 
 # 로그 저장 폴더 (없으면 자동 생성)
 LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "log")
+print(LOG_DIR)
+# print(os.path.dirname())
+print(os.path.dirname(__file__))
+print(os.path.dirname(os.path.dirname(__file__)))
 os.makedirs(LOG_DIR, exist_ok=True)
 
 def get_logger(name, filename, level=logging.INFO):
