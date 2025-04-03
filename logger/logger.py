@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler
 
 class Logger:
     _instances ={}
+    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__) + "/..") 
     LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "log")
     print("[TEST] ☑️ Logger - ",LOG_DIR)
     
