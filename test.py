@@ -1,19 +1,29 @@
-# Ollama Process 테스트 코드
-from models import ollama
-print("[TEST] ☑️ 프로세스 실행 테스트")
+# 경로 설정 테스트
+import os
+import sys
 
-process = ollama.startOllama()
-print(f"Ollama 실행 프로세스 : {process}")
+PROJECT_ROOT = os.getcwd()  # 현재 실행 위치를 기준으로 경로 설정
+LOG_DIR = os.path.join(PROJECT_ROOT, "log")
 
-print("[TEST] ☑️ 프로세스 종료 테스트")
+PROJECT_ROOT = os.path.abspath(sys.path[0])
+LOG_DIR = os.path.join(PROJECT_ROOT, "log")
 
-ollama.stopOllama()
+# # Ollama Process 테스트 코드
+# from models import ollama
+# print("[TEST] ☑️ 프로세스 실행 테스트")
 
-print("[TEST] ☑️ 프로세스 중복 테스트")
-process1 = ollama.startOllama()
-process2 = ollama.startOllama()
-print(f"프로세스 1 PID : {process1.pid}")
-print(f"프로세스 2 PID : {process2.pid}")
+# process = ollama.startOllama()
+# print(f"Ollama 실행 프로세스 : {process}")
+
+# print("[TEST] ☑️ 프로세스 종료 테스트")
+
+# ollama.stopOllama()
+
+# print("[TEST] ☑️ 프로세스 중복 테스트")
+# process1 = ollama.startOllama()
+# process2 = ollama.startOllama()
+# print(f"프로세스 1 PID : {process1.pid}")
+# print(f"프로세스 2 PID : {process2.pid}")
 
 # Ollama Binary 테스트 코드
 # import ollama
