@@ -1,12 +1,28 @@
-# 경로 설정 테스트
 import os
 import sys
 
-PROJECT_ROOT = os.getcwd()  # 현재 실행 위치를 기준으로 경로 설정
-LOG_DIR = os.path.join(PROJECT_ROOT, "log")
+print("=== 경로 정보 출력 ===")
+print(f"os.getcwd():       {os.getcwd()}")
+print(f"__file__:           {__file__}")
+print(f"os.path.dirname:   {os.path.dirname(__file__)}")
+print(f"sys.path[0]:        {sys.path[0]}")
+print("=====================")
 
-PROJECT_ROOT = os.path.abspath(sys.path[0])
-LOG_DIR = os.path.join(PROJECT_ROOT, "log")
+
+# # 경로 설정 테스트
+# import os
+# import sys
+
+# PROJECT_ROOT = os.getcwd()  # 현재 실행 위치를 기준으로 경로 설정
+# LOG_DIR = os.path.join(PROJECT_ROOT, "log")
+# print(PROJECT_ROOT)
+# print(LOG_DIR)
+
+# PROJECT_ROOT = os.path.abspath(sys.path[0])
+# LOG_DIR = os.path.join(PROJECT_ROOT, "log")
+
+# print(PROJECT_ROOT)
+# print(LOG_DIR)
 
 # # Ollama Process 테스트 코드
 # from models import ollama
