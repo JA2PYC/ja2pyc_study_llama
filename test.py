@@ -8,6 +8,11 @@ print(f"os.path.dirname:   {os.path.dirname(__file__)}")
 print(f"sys.path[0]:        {sys.path[0]}")
 print("=====================")
 
+try:
+    from config import testmodule
+    testmodule.test_module()
+except Exception as e:
+    print("[TEST] ☑️ Import Error:", e)
 
 # # 경로 설정 테스트
 # import os
