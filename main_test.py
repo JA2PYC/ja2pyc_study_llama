@@ -1,3 +1,5 @@
+# ------------------------------
+# 경로 모듈 테스트
 import os
 import sys
 
@@ -8,12 +10,13 @@ print(f"os.path.dirname:   {os.path.dirname(__file__)}")
 print(f"sys.path[0]:        {sys.path[0]}")
 print("=====================")
 
-try:
-    from config import testmodule
-    testmodule.test_module()
-except Exception as e:
-    print("[TEST] ☑️ Import Error:", e)
+# try:
+#     from config import testmodule
+#     testmodule.test_module()
+# except Exception as e:
+#     print("[TEST] ☑️ Import Error:", e)
 
+# ------------------------------
 # # 경로 설정 테스트
 # import os
 # import sys
@@ -29,6 +32,7 @@ except Exception as e:
 # print(PROJECT_ROOT)
 # print(LOG_DIR)
 
+# ------------------------------
 # # Ollama Process 테스트 코드
 # from models import ollama
 # print("[TEST] ☑️ 프로세스 실행 테스트")
@@ -46,6 +50,7 @@ except Exception as e:
 # print(f"프로세스 1 PID : {process1.pid}")
 # print(f"프로세스 2 PID : {process2.pid}")
 
+# ------------------------------
 # Ollama Binary 테스트 코드
 # import ollama
 # import shutil
