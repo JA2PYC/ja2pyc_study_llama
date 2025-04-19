@@ -1,2 +1,8 @@
-# READ ME
-## python main.py
+# LLM Aquarium
+
+*****
+
+## Execute
+python main.py
+
+*****
