@@ -4,6 +4,8 @@ import subprocess
 import time
 from logger import logger
 
+# 개발 테스용 서버 실행용
+
 # VENV Settings
 VENV_PATH = os.path.join(os.path.dirname(__file__), "venv")
 PYTHON_EXEC = (
