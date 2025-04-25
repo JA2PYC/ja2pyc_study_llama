@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, jsonify
 from dashboard.tasks.test_task import long_task
 
 # Celery Hint
-# from celery import Task
-# long_task: Task
+from celery import Task
+long_task: Task
 
 home_bp = Blueprint("home", __name__)
 
