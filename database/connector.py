@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 
-from .db_config import DATABASE_URL
-from .db_init import create_database_and_tables
-from .db_status import save_status
+from .config import DATABASE_URL
+from .init import create_database_and_tables
+from .status import save_status
 
 class DatabaseClient:
     _instance = None
