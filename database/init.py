@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 
-from .db_config import DATABASE_URL_DEFAULT, DATABASE_URL, DB_NAME
-from .db_status import save_status
+from .config import DATABASE_URL_DEFAULT, DATABASE_URL, DB_NAME
+from .status import save_status
 
 def create_database_and_tables():
     try:

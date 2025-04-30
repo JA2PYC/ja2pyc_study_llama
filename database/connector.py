@@ -1,45 +1,57 @@
-# database/connector.py
-
+import threading
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import OperationalError
+
+from .config import DATABASE_URL
+from .init import create_database_and_tables
+from .status import save_status
 
 class DatabaseClient:
-    def __init__(self, db_url):
-        """
-        DatabaseClient 생성자
-        :param db_url: 데이터베이스 접속 URL
-        """
-        self.db_url = db_url
-        self.engine = None
-        self.SessionLocal = None
+    _instance = None
+    _lock = threading.Lock()
 
-    def connect(self):
-        """
-        데이터베이스 연결을 설정한다.
-        """
+    def __new__(cls):
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = super(DatabaseClient, cls).__new__(cls)
+                    cls._instance._init_db()
+        return cls._instance
+
+    def _init_db(self):
         try:
-            self.engine = create_engine(self.db_url, echo=True, future=True)
-            self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
-            print("✅ 데이터베이스 연결 성공")
-        except SQLAlchemyError as e:
-            print(f"❌ 데이터베이스 연결 실패: {e}")
+            create_database_and_tables()
+
+            self.engine = create_engine(
+                DATABASE_URL,
+                pool_size=10,
+                max_overflow=20,
+                pool_recycle=1800,
+                pool_pre_ping=True,
+            )
+            self.SessionLocal = sessionmaker(
+                bind=self.engine, autocommit=False, autoflush=False
+            )
+            save_status(None)
+        except OperationalError as e:
+            error_message = f"DB 연결 실패: {str(e)}"
+            save_status(error_message)
             self.engine = None
             self.SessionLocal = None
 
-    def get_session(self):
-        """
-        세션 객체를 가져온다.
-        :return: 세션 객체 (SessionLocal 인스턴스)
-        """
-        if not self.SessionLocal:
-            raise RuntimeError("SessionLocal이 설정되지 않았습니다. connect()를 먼저 호출하세요.")
-        return self.SessionLocal()
+    def get_db(self):
+        db = self.SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
 
-    def close(self):
-        """
-        데이터베이스 연결을 종료한다.
-        """
-        if self.engine:
-            self.engine.dispose()
-            print("ℹ️ 데이터베이스 연결 종료 완료")
+    def get_session(self):
+        if self.SessionLocal:
+            return self.SessionLocal()
+        else:
+            return None
+
+# 전역 인스턴스
+db_client = DatabaseClient()
