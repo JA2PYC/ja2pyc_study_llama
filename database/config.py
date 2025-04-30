@@ -1,3 +1,4 @@
+# database/config.py
 import os
 from dotenv import load_dotenv
 
@@ -11,3 +12,5 @@ DB_NAME = os.getenv("DB_NAME", "llmaquarium")
 
 DATABASE_URL_DEFAULT = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PROT}/"
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PROT}/{DB_NAME}"
+
+STATUS_FILE = "db_status.json"
