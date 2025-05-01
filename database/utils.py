@@ -1,6 +1,6 @@
+# database/utils.py
 import json
-
-STATUS_FILE = "db_status.json"
+from .config import STATUS_FILE
 
 
 def save_status(error_message=None):
