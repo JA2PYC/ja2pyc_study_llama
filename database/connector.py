@@ -1,13 +1,14 @@
-import threading
-from sqlalchemy import create_engine
+# database/connector.py
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
+import threading
+import json
+from .client import AbstractDatabaseClient
+from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME, STATUS_FILE
+from .utils import save_status
 
-from .config import DATABASE_URL
-from .init import create_database_and_tables
-from .status import save_status
-
-class DatabaseClient:
+class DatabaseClient(AbstractDatabaseClient):
     _instance = None
     _lock = threading.Lock()
 
@@ -15,43 +16,38 @@ class DatabaseClient:
         if not cls._instance:
             with cls._lock:
                 if not cls._instance:
-                    cls._instance = super(DatabaseClient, cls).__new__(cls)
+                    cls._instance = super().__new__(cls)
                     cls._instance._init_db()
         return cls._instance
 
     def _init_db(self):
         try:
-            create_database_and_tables()
-
-            self.engine = create_engine(
-                DATABASE_URL,
-                pool_size=10,
-                max_overflow=20,
-                pool_recycle=1800,
-                pool_pre_ping=True,
-            )
-            self.SessionLocal = sessionmaker(
-                bind=self.engine, autocommit=False, autoflush=False
-            )
+            self._create_database_if_not_exists()
+            self.engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+            self.SessionLocal = sessionmaker(bind=self.engine, autocommit=False, autoflush=False)
             save_status(None)
         except OperationalError as e:
-            error_message = f"DB 연결 실패: {str(e)}"
-            save_status(error_message)
+            save_status(f"DB 연결 실패: {e}")
             self.engine = None
             self.SessionLocal = None
 
+    def _create_database_if_not_exists(self):
+        try:
+            engine = create_engine(DATABASE_URL_DEFAULT)
+            with engine.connect() as conn:
+                conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}"))
+                conn.commit()
+        except OperationalError as e:
+            save_status(f"DB 생성 실패: {e}")
+
+    def get_session(self):
+        return self.SessionLocal()
+
     def get_db(self):
-        db = self.SessionLocal()
+        db = self.get_session()
         try:
             yield db
         finally:
             db.close()
 
-    def get_session(self):
-        if self.SessionLocal:
-            return self.SessionLocal()
-        else:
-            return None
-
-# 전역 인스턴스
 db_client = DatabaseClient()
