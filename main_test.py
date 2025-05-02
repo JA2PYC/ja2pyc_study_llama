@@ -1,14 +1,25 @@
 # ------------------------------
-# 경로 모듈 테스트
-import os
-import sys
+# DB 접속 테스트
+# test_something.py
+from database import mock_db_client
 
-print("=== 경로 정보 출력 ===")
-print(f"os.getcwd():       {os.getcwd()}")
-print(f"__file__:           {__file__}")
-print(f"os.path.dirname:   {os.path.dirname(__file__)}")
-print(f"sys.path[0]:        {sys.path[0]}")
-print("=====================")
+session = mock_db_client.get_session()
+users = session.query("User")
+print(users)  # []
+session.close()
+
+
+# ------------------------------
+# 경로 모듈 테스트
+# import os
+# import sys
+
+# print("=== 경로 정보 출력 ===")
+# print(f"os.getcwd():       {os.getcwd()}")
+# print(f"__file__:           {__file__}")
+# print(f"os.path.dirname:   {os.path.dirname(__file__)}")
+# print(f"sys.path[0]:        {sys.path[0]}")
+# print("=====================")
 
 # try:
 #     from config import testmodule
