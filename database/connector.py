@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 import threading
 import json
-from .client import AbstractDatabaseClient
+from .abstract_client import AbstractDatabaseClient
 from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME, STATUS_FILE
 from .utils import save_status
 
