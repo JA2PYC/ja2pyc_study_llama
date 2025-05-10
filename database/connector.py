@@ -3,10 +3,10 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 import threading
-import json
 from .abstract_database_client import AbstractDatabaseClient
 from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME, STATUS_FILE
 from .utils import save_status
+
 
 class DatabaseClient(AbstractDatabaseClient):
     _instance = None
@@ -24,7 +24,9 @@ class DatabaseClient(AbstractDatabaseClient):
         try:
             self._create_database_if_not_exists()
             self.engine = create_engine(DATABASE_URL, pool_pre_ping=True)
-            self.SessionLocal = sessionmaker(bind=self.engine, autocommit=False, autoflush=False)
+            self.SessionLocal = sessionmaker(
+                bind=self.engine, autocommit=False, autoflush=False
+            )
             save_status(None)
         except OperationalError as e:
             save_status(f"DB 연결 실패: {e}")
@@ -33,10 +35,13 @@ class DatabaseClient(AbstractDatabaseClient):
 
     def _create_database_if_not_exists(self):
         try:
+            # DB 생성
             engine = create_engine(DATABASE_URL_DEFAULT)
             with engine.connect() as conn:
                 conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}"))
                 conn.commit()
+                
+                
         except OperationalError as e:
             save_status(f"DB 생성 실패: {e}")
 
@@ -49,5 +54,6 @@ class DatabaseClient(AbstractDatabaseClient):
             yield db
         finally:
             db.close()
+
 
 db_client = DatabaseClient()

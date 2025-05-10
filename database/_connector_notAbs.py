@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 
 from .config import DATABASE_URL
-from .init import create_database_and_tables
+from ._init_old import create_database_and_tables
 from .utils import save_status
 
 class DatabaseClient:
