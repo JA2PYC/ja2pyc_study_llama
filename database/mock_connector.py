@@ -1,5 +1,5 @@
 # database/mock_connector.py
-from .abstract_client import AbstractDatabaseClient
+from .abstract_database_client import AbstractDatabaseClient
 
 class MockDatabaseClient(AbstractDatabaseClient):
     def get_session(self):
