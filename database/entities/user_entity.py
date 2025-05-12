@@ -1,5 +1,8 @@
+# User Entity
 from sqlalchemy import Column, Integer, String
-from database.connector import Base  # SQLAlchemy Base
+
+# SQLAlchemy Base
+from database.connector import Base  
 
 class User(Base):
     __tablename__ = 'users'

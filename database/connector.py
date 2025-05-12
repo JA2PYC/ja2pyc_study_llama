@@ -1,8 +1,17 @@
 # database/connector.py
+
+import threading
+
+# SQL Alchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
-import threading
+
+# Entity Base
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeMeta
+
+# Internal
 from .abstract_database_client import AbstractDatabaseClient
 from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME, STATUS_FILE
 from .utils import save_status
@@ -57,3 +66,4 @@ class DatabaseClient(AbstractDatabaseClient):
 
 
 db_client = DatabaseClient()
+Base: DeclarativeMeta = declarative_base()
