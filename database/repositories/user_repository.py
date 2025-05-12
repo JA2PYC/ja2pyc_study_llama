@@ -1,19 +1,35 @@
+# database/repositories/user_repository.py
 from database.connector import db_client
 from database.entities.user_entity import User
-from sqlalchemy.orm import Session
 
 class UserRepository:
     def __init__(self):
-        self.Session = db_client.get_session
+        self.db_session = db_client.get_session()
 
-    def get_by_id(self, user_id: int) -> User:
-        with self.Session() as db:
-            return db.query(User).filter(User.id == user_id).first()
+    def get_all_users(self):
+        return self.db_session.query(User).all()
 
-    def create(self, name: str, email: str) -> User:
-        with self.Session() as db:
-            user = User(name=name, email=email)
-            db.add(user)
-            db.commit()
-            db.refresh(user)
-            return user
+    def get_user_by_id(self, user_id):
+        return self.db_session.query(User).filter(User.id == user_id).first()
+
+
+# from database.connector import db_client
+# from database.entities.user_entity import User
+# from sqlalchemy.orm import Session
+
+
+# class UserRepository:
+#     def __init__(self):
+#         self.Session = db_client.get_session
+
+#     def get_by_id(self, user_id: int) -> User:
+#         with self.Session() as db:
+#             return db.query(User).filter(User.id == user_id).first()
+
+#     def create(self, name: str, email: str) -> User:
+#         with self.Session() as db:
+#             user = User(name=name, email=email)
+#             db.add(user)
+#             db.commit()
+#             db.refresh(user)
+#             return user
