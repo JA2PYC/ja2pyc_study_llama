@@ -67,3 +67,4 @@ class DatabaseClient(AbstractDatabaseClient):
 
 db_client = DatabaseClient()
 Base: DeclarativeMeta = declarative_base()
+engine = db_client.engine
