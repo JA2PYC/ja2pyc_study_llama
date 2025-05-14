@@ -63,6 +63,9 @@ class DatabaseClient(AbstractDatabaseClient):
             yield db
         finally:
             db.close()
+            
+    def get_engine(self):
+        return db_client.engine
 
 
 db_client = DatabaseClient()
