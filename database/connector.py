@@ -49,8 +49,7 @@ class DatabaseClient(AbstractDatabaseClient):
             with engine.connect() as conn:
                 conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}"))
                 conn.commit()
-                
-                
+
         except OperationalError as e:
             save_status(f"DB 생성 실패: {e}")
 
@@ -63,11 +62,14 @@ class DatabaseClient(AbstractDatabaseClient):
             yield db
         finally:
             db.close()
-            
+
     def get_engine(self):
-        return db_client.engine
+        return self.engine
 
 
 db_client = DatabaseClient()
 Base: DeclarativeMeta = declarative_base()
-engine = db_client.engine
+
+
+def get_engine():
+    return db_client.get_engine()
