@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String
 
 # SQLAlchemy Base
-from database.connector import Base  
+from .base import Base
 
 class User(Base):
     __tablename__ = 'users'
