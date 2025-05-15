@@ -7,10 +7,6 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 
-# Entity Base
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import DeclarativeMeta
-
 # Internal
 from .abstract_database_client import AbstractDatabaseClient
 from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME, STATUS_FILE
@@ -49,8 +45,7 @@ class DatabaseClient(AbstractDatabaseClient):
             with engine.connect() as conn:
                 conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}"))
                 conn.commit()
-                
-                
+
         except OperationalError as e:
             save_status(f"DB 생성 실패: {e}")
 
@@ -63,11 +58,12 @@ class DatabaseClient(AbstractDatabaseClient):
             yield db
         finally:
             db.close()
-            
+
     def get_engine(self):
-        return db_client.engine
+        return self.engine
 
 
 db_client = DatabaseClient()
-Base: DeclarativeMeta = declarative_base()
-engine = db_client.engine
+
+def get_engine():
+    return db_client.get_engine()
