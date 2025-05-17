@@ -1,5 +1,4 @@
-# database/connector.py
-
+# database/database_client.py
 import threading
 
 # SQL Alchemy
@@ -63,7 +62,7 @@ class DatabaseClient(AbstractDatabaseClient):
         return self.engine
 
 
-db_client = DatabaseClient()
+# db_client = DatabaseClient()
 
-def get_engine():
-    return db_client.get_engine()
+# def get_engine():
+#     return db_client.get_engine()
