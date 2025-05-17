@@ -1,6 +1,6 @@
-from .connector import get_engine
+from .database_client import get_engine
 from .entities.base import Base
-from .entities import user_entity
+from .entities import *
 
 def init_db():
     Base.metadata.create_all(bind=get_engine())

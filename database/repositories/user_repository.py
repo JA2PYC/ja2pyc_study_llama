@@ -1,5 +1,5 @@
 # database/repositories/user_repository.py
-from database.connector import db_client
+from database.database_client import db_client
 from database.entities.user_entity import User
 
 class UserRepository:
