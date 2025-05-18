@@ -6,9 +6,11 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 
-# Internal
+# Abstract Class
 from .abstract_database_client import AbstractDatabaseClient
-from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME, STATUS_FILE
+
+# Settings
+from .config import DATABASE_URL, DATABASE_URL_DEFAULT, DB_NAME
 from .utils import save_status
 
 
@@ -51,15 +53,15 @@ class DatabaseClient(AbstractDatabaseClient):
     def get_session(self):
         return self.SessionLocal()
 
+    def get_engine(self):
+        return self.engine
+
     def get_db(self):
         db = self.get_session()
         try:
             yield db
         finally:
             db.close()
-
-    def get_engine(self):
-        return self.engine
 
 
 # db_client = DatabaseClient()
