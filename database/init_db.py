@@ -1,4 +1,4 @@
-from .database_client import get_engine
+from .database_manager import get_engine
 from .entities.base import Base
 from .entities import *
 
