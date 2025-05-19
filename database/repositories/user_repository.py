@@ -1,16 +1,16 @@
 # database/repositories/user_repository.py
-from database.database_client import db_client
-from database.entities.user_entity import User
+from database.database_manager import DatabaseManager as db_manager
+from database.entities.user_entity import UserEntity
 
 class UserRepository:
     def __init__(self):
-        self.db_session = db_client.get_session()
+        self.db_session = db_manager.get_session()
 
     def get_all_users(self):
-        return self.db_session.query(User).all()
+        return self.db_session.query(UserEntity).all()
 
     def get_user_by_id(self, user_id):
-        return self.db_session.query(User).filter(User.id == user_id).first()
+        return self.db_session.query(UserEntity).filter(UserEntity.id == user_id).first()
 
 
 # from database.connector import db_client
