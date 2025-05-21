@@ -11,6 +11,9 @@ class UserRepository:
 
     def get_user_by_id(self, user_id):
         return self.db_session.query(UserEntity).filter(UserEntity.id == user_id).first()
+    
+    def get_user_by_name(self, user_name):
+        return self.db_session.query(UserEntity).filter(UserEntity.name == user_name).first()
 
 
 # from database.connector import db_client
