@@ -23,10 +23,10 @@ class DatabaseClient(AbstractDatabaseClient):
             with cls._lock:
                 if not cls._instance:
                     cls._instance = super().__new__(cls)
-                    cls._instance._init_db()
+                    cls._instance._init_db_client()
         return cls._instance
 
-    def _init_db(self):
+    def _init_db_client(self):
         try:
             self._create_database_if_not_exists()
             self.engine = create_engine(DATABASE_URL, pool_pre_ping=True)
