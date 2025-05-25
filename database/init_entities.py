@@ -1,6 +1,8 @@
 # init_entities.py
 from .database_manager import DatabaseManager as DB_Manager
 from .entities.base import Base
+
+# Set Entity
 from . import entities
 
 def init_entities():
