@@ -1,4 +1,4 @@
-# database/client.py
+# database/abstract_database_client.py
 from abc import ABC, abstractmethod
 
 class AbstractDatabaseClient(ABC):

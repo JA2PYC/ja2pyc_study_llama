@@ -6,8 +6,19 @@ from .password_hasher import verify_password
 from .jwt_token import create_access_token
 
 class AuthService:
+    def __init__(self):
+        self.db= _db_manager
+    
+    def login(self, login_id:str, password:str)->UserEntity | None:
+        session = self.db.get_session()
+        user = session.query(UserEntity).filter_by(login_id=login_id).first()
+        
+        if user and verify_password(password, user.password):
+            return user
+        return None
+    
     @staticmethod
-    def login(login_id: str, password: str):
+    def login_static(login_id: str, password: str):
         session = _db_manager.get_session()
         with session as db:
             user = db.query(UserEntity).filter_by(login_id=login_id).first()
